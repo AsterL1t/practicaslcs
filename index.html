@@ -1,0 +1,4760 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+        <link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <link rel="stylesheet" href="css/filter.css">
+<link rel="stylesheet" href="css/nouislider.min.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/L.Control.Layers.Tree.min.js"></script>
+        <script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet-svg-shape-markers.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="js/tailDT.js"></script>
+<script src="js/nouislider.min.js"></script>
+<script src="js/wNumb.js"></script>
+        <script src="data/AreaReginCentro_0.js"></script>
+        <script src="data/LimiteMunicipioNeiva_1.js"></script>
+        <script src="data/LimiteUrbanoycentrospobladosNeiva_2.js"></script>
+        <script src="data/LimiteUrbanoNeiva_3.js"></script>
+        <script src="data/FronterasMunicipalesNeiva_4.js"></script>
+        <script src="data/LimiteBarriosNeiva_5.js"></script>
+        <script src="data/RedVialUrbanaNeiva_6.js"></script>
+        <script src="data/ViasReginCentro_7.js"></script>
+        <script src="data/EducacinReginCentro_8.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString' || e.target.feature.geometry.type === 'MultiLineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+        }
+        var map = L.map('map', {
+            zoomControl:false, maxZoom:28, minZoom:1
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        // remove popup's row if "visible-with-data"
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        // add class to format popup if it contains media
+		function addClassToPopupIfMedia(content, popup) {
+			var tempDiv = document.createElement('div');
+			tempDiv.innerHTML = content;
+			if (tempDiv.querySelector('td img')) {
+				popup._contentNode.classList.add('media');
+					// Delay to force the redraw
+					setTimeout(function() {
+						popup.update();
+					}, 10);
+			} else {
+				popup._contentNode.classList.remove('media');
+			}
+		}
+        var zoomControl = L.control.zoom({
+            position: 'topleft'
+        }).addTo(map);
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+        }
+        function pop_AreaReginCentro_0(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_AreaReginCentro_0_0() {
+            return {
+                pane: 'pane_AreaReginCentro_0',
+                opacity: 1,
+                color: 'rgba(227,26,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 3.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(175,6,6,0.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_AreaReginCentro_0');
+        map.getPane('pane_AreaReginCentro_0').style.zIndex = 400;
+        map.getPane('pane_AreaReginCentro_0').style['mix-blend-mode'] = 'normal';
+        var layer_AreaReginCentro_0 = new L.geoJson(json_AreaReginCentro_0, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_AreaReginCentro_0',
+            layerName: 'layer_AreaReginCentro_0',
+            pane: 'pane_AreaReginCentro_0',
+            onEachFeature: pop_AreaReginCentro_0,
+            style: style_AreaReginCentro_0_0,
+        });
+        bounds_group.addLayer(layer_AreaReginCentro_0);
+        map.addLayer(layer_AreaReginCentro_0);
+        function pop_LimiteMunicipioNeiva_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_LimiteMunicipioNeiva_1_0() {
+            return {
+                pane: 'pane_LimiteMunicipioNeiva_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,212,212,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_LimiteMunicipioNeiva_1');
+        map.getPane('pane_LimiteMunicipioNeiva_1').style.zIndex = 401;
+        map.getPane('pane_LimiteMunicipioNeiva_1').style['mix-blend-mode'] = 'normal';
+        var layer_LimiteMunicipioNeiva_1 = new L.geoJson(json_LimiteMunicipioNeiva_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_LimiteMunicipioNeiva_1',
+            layerName: 'layer_LimiteMunicipioNeiva_1',
+            pane: 'pane_LimiteMunicipioNeiva_1',
+            onEachFeature: pop_LimiteMunicipioNeiva_1,
+            style: style_LimiteMunicipioNeiva_1_0,
+        });
+        bounds_group.addLayer(layer_LimiteMunicipioNeiva_1);
+        map.addLayer(layer_LimiteMunicipioNeiva_1);
+        function pop_LimiteUrbanoycentrospobladosNeiva_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_LimiteUrbanoycentrospobladosNeiva_2_0() {
+            return {
+                pane: 'pane_LimiteUrbanoycentrospobladosNeiva_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(229,182,54,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_LimiteUrbanoycentrospobladosNeiva_2');
+        map.getPane('pane_LimiteUrbanoycentrospobladosNeiva_2').style.zIndex = 402;
+        map.getPane('pane_LimiteUrbanoycentrospobladosNeiva_2').style['mix-blend-mode'] = 'normal';
+        var layer_LimiteUrbanoycentrospobladosNeiva_2 = new L.geoJson(json_LimiteUrbanoycentrospobladosNeiva_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_LimiteUrbanoycentrospobladosNeiva_2',
+            layerName: 'layer_LimiteUrbanoycentrospobladosNeiva_2',
+            pane: 'pane_LimiteUrbanoycentrospobladosNeiva_2',
+            onEachFeature: pop_LimiteUrbanoycentrospobladosNeiva_2,
+            style: style_LimiteUrbanoycentrospobladosNeiva_2_0,
+        });
+        bounds_group.addLayer(layer_LimiteUrbanoycentrospobladosNeiva_2);
+        map.addLayer(layer_LimiteUrbanoycentrospobladosNeiva_2);
+        function pop_LimiteUrbanoNeiva_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_LimiteUrbanoNeiva_3_0() {
+            return {
+                pane: 'pane_LimiteUrbanoNeiva_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_LimiteUrbanoNeiva_3');
+        map.getPane('pane_LimiteUrbanoNeiva_3').style.zIndex = 403;
+        map.getPane('pane_LimiteUrbanoNeiva_3').style['mix-blend-mode'] = 'normal';
+        var layer_LimiteUrbanoNeiva_3 = new L.geoJson(json_LimiteUrbanoNeiva_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_LimiteUrbanoNeiva_3',
+            layerName: 'layer_LimiteUrbanoNeiva_3',
+            pane: 'pane_LimiteUrbanoNeiva_3',
+            onEachFeature: pop_LimiteUrbanoNeiva_3,
+            style: style_LimiteUrbanoNeiva_3_0,
+        });
+        bounds_group.addLayer(layer_LimiteUrbanoNeiva_3);
+        map.addLayer(layer_LimiteUrbanoNeiva_3);
+        function pop_FronterasMunicipalesNeiva_4(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_FronterasMunicipalesNeiva_4_0() {
+            return {
+                pane: 'pane_FronterasMunicipalesNeiva_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '2.0,1.0',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(171,171,171,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_FronterasMunicipalesNeiva_4');
+        map.getPane('pane_FronterasMunicipalesNeiva_4').style.zIndex = 404;
+        map.getPane('pane_FronterasMunicipalesNeiva_4').style['mix-blend-mode'] = 'normal';
+        var layer_FronterasMunicipalesNeiva_4 = new L.geoJson(json_FronterasMunicipalesNeiva_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_FronterasMunicipalesNeiva_4',
+            layerName: 'layer_FronterasMunicipalesNeiva_4',
+            pane: 'pane_FronterasMunicipalesNeiva_4',
+            onEachFeature: pop_FronterasMunicipalesNeiva_4,
+            style: style_FronterasMunicipalesNeiva_4_0,
+        });
+        bounds_group.addLayer(layer_FronterasMunicipalesNeiva_4);
+        map.addLayer(layer_FronterasMunicipalesNeiva_4);
+        function pop_LimiteBarriosNeiva_5(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">NOM_BARRIO</th>\
+                        <td>' + (feature.properties['NOM_BARRIO'] !== null ? autolinker.link(String(feature.properties['NOM_BARRIO']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">NO__COMUNA</th>\
+                        <td>' + (feature.properties['NO__COMUNA'] !== null ? autolinker.link(String(feature.properties['NO__COMUNA']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">APROBADO</th>\
+                        <td>' + (feature.properties['APROBADO'] !== null ? autolinker.link(String(feature.properties['APROBADO']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">URBANIZADO</th>\
+                        <td>' + (feature.properties['URBANIZADO'] !== null ? autolinker.link(String(feature.properties['URBANIZADO']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>FUENTE</strong><br />' + (feature.properties['FUENTE'] !== null ? autolinker.link(String(feature.properties['FUENTE']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_LimiteBarriosNeiva_5_0(feature) {
+            switch(String(feature.properties['NOM_BARRIO'])) {
+                case 'ACROPOLIS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(48,18,59,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'ALAMOS NORTE':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(50,21,67,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'ALBERTO GALINDO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(51,24,74,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'ALBERTO YEPES':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(52,27,81,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'ALFONSO LOPEZ PUMAREJO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(53,30,87,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'ALTICO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(54,33,94,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'ALTOS DEL LIMONAR':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(55,36,101,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'ALVARO LEYVA LIEVANO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(56,39,108,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'ANDALUCIA II ETAPA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(57,41,114,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'ANTONIO NARIÑO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(58,44,120,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'ARBOLEDA NORTE':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(59,47,126,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'ARISMENDI MORA PERDOMO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(60,49,132,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'ARRAYANES':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(61,52,138,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'BAJO PEDREGAL':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(62,55,143,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'BALCONES DE LA RIVIERA III ETAPA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(63,58,149,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'BALCONES DEL NORTE':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(63,61,154,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'BELLA VISTA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,63,160,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'BOGOTA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(65,66,165,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'BONILLA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(65,69,170,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'BOSQUES DE SAN LUIS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(66,72,175,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'BRISAS DEL MAGDALENA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(66,74,179,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'BRISAS DEL SENA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(67,77,184,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'BUENA VISTA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(67,79,188,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'BUENOS AIRES':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(68,82,193,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'CALAMARI':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(68,85,197,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'CALIFORNIA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(68,87,201,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'CALIXTO LEIVA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(69,90,205,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'CAMBULOS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(69,93,209,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'CAMILO TORRES':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(69,95,212,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'CAMPO NUNEZ':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(70,98,215,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'CANAIMA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(70,101,219,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'CANDIDO LEGUIZAMO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(70,103,222,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'CARACOLI':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(70,106,225,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'CARLOS PIZARRO LEON GOMEZ':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(70,108,228,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'CASA LOMA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(71,111,231,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'CHAPINERO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(71,113,233,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'CHICALA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(71,116,236,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'CIUDAD SALITRE':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(71,118,238,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'CIUDADELA ANTONIO BARAYA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(71,120,240,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'CIUDADELA COMFAMILIAR':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(71,123,242,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'CIUDADELA EL COCLI':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(70,125,244,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'CIUDADELA ENCENILLO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(70,128,246,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'CIUDADELA SIGLO XXI':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(70,130,248,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'CIUDADELAS DE SANTA ANA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(70,133,250,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'COLMENAR I Y II ETAPA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(70,135,251,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'COLMENAR III ETAPA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(69,138,252,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'COMBEIMA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(69,140,253,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'CONARVAR':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(68,143,254,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'CONJUNTOS DE ORIENTE':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(67,145,254,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'DARIO ECHANDIA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(66,148,255,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'DIEGO DE OSPINA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(65,150,255,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'EDUARDO SANTOS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,152,255,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'EFRAIN ROJAS TRUJILLO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(62,155,254,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'EL CANELO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(61,157,254,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'EL CENTRO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(59,160,253,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'EL CORTIJO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(58,162,252,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'EL DORADO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(57,164,251,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'EL ESTADIO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(55,167,250,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'EL FARO VEINTE DE JULIO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(54,170,249,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'El JARDIN':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(52,172,247,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'EL LAGO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(50,174,246,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'EL OASIS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(48,177,244,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'EL PEDREGAL':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(46,179,243,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'EL PEÑON':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(45,182,241,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'EL PRADO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(43,184,239,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'EL PROGRESO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(41,187,236,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'EL TEJAR':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(40,189,234,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'EL TESORO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(38,191,232,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'EL TRIUNFO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(36,193,230,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'EL VERGEL':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(35,196,227,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'EMAYA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(33,198,225,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'ENRIQUE OLAYA HERRERA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(32,200,222,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'FALLA BERNAL':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(31,202,220,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'FRONTERAS DEL MILENIO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(29,204,217,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'GAITAN':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(28,206,215,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'GUALANDAY':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(27,209,212,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'GUILLERMO PLAZAS ALCID':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,211,209,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'IPANEMA (E/C)':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,212,207,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'JESUS NAZARENO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(25,213,204,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'JORDAN':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(24,215,202,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'JOSE ANTONIO GALAN':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(24,217,199,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'JOSE EUSTACIO RIVERA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(24,219,197,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'JOSE MARIA CARBONEL':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(24,221,194,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'JOSE MARTI':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(24,222,192,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'KATAKANDRU':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(24,224,189,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'KENNEDY':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(25,226,187,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA AMISTAD':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(25,227,185,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA ARBOLEDA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,228,182,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA CARPETA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(28,230,180,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA COLINA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(29,231,178,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA CORDIALIDAD':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(31,233,175,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA CRISTALINA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(32,234,172,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA ESPERANZA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(34,235,170,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA FLORESTA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(37,236,167,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA FLORIDA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(39,238,164,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA FORTALEZA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(41,239,162,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA GAITANA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(44,240,159,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA GAITANA (\'\'\')':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(46,241,156,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA GAITANA II':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(49,242,153,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA INDEPENDENCIA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(52,243,149,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA INMACULADA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(55,244,146,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA ISLA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(59,245,143,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA JUVENTUD':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(62,246,139,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA LIBERTAD':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(66,247,136,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA ORQUIDEA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(69,248,133,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA PAZ':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(72,248,130,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA PRADERA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(76,249,126,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA PRIMAVERA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(80,250,123,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA RIOJA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(84,250,120,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA RIVIERA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(87,251,116,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA TERMINAL':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(91,251,113,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA TOMA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(95,252,110,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LA VORAGINE':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(99,252,107,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LAS BRISAS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(103,253,104,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LAS CAMELIAS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(107,253,100,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LAS CATLEYAS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(110,254,97,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LAS CEIBAS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(114,254,94,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LAS DELICIAS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(118,254,91,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LAS FERIAS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(122,254,88,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LAS GRANJAS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(126,255,85,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LAS LAJAS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(129,255,82,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LAS MERCEDES':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(133,255,80,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LAS PALMAS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(137,255,77,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LAS PALMAS II':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(140,255,75,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LIMONAR':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(143,255,73,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LOMA DE LA CRUZ':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(147,255,71,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LOMA LINDA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(150,254,68,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LOS ALMENDROS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(153,254,66,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LOS ALPES':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(156,254,64,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LOS ANDAQUIES':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(159,253,63,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LOS ANDES':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(161,253,61,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LOS BUGANVILES':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(164,252,60,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LOS CAOBOS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(167,252,58,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LOS CEDROS-NORTE':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(169,251,57,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LOS CIPRESES':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(172,251,56,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LOS COLORES':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(175,250,55,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LOS COMUNEROS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(177,249,54,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LOS DUJOS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(180,248,54,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LOS ELISIOS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(183,247,53,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LOS GUADUALES':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(185,246,53,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LOS MARTIRES':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(187,245,52,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LOS MOLINOS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(190,244,52,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LOS NARANJOS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(192,243,52,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LOS PARQUES':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(194,242,52,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LOS PINOS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(197,240,52,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LOS PROFESIONALES':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(199,239,52,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LOS ROSALES':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(202,238,52,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LOS SAMANES':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(204,236,52,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LUIS CARLOS GALAN I ETAPA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(207,235,52,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LUIS CARLOS GALAN II ETAPA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(209,233,53,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LUIS EDUARDO VANEGAS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(211,232,53,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'LUIS IGNACIO ANDRADE':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(214,230,53,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'MADRIGAL':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(216,228,54,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'MANSIONES DEL NORTE':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(218,227,54,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'MANZANARES':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(220,225,54,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'MATAMUNDO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(222,224,55,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'MINUTO DE DIOS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(224,222,55,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'MINUTO DE DIOS III ETAPA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(226,220,55,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'MINUTO DE DIOS IV ETAPA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(228,218,56,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'MINUTO DE DIOS V ETAPA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(230,216,56,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'MIRA RIO I-II-III-IV ETAPA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(232,214,57,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'MIRAMAR':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(234,212,57,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'MISAEL PASTRANA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(235,210,57,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'MODELO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(237,208,58,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'MONSERRATE':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(238,207,58,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'MUNICIPAL':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(239,205,58,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'NEIVA LA NUEVA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(241,203,58,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'NEIVAYA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(242,201,58,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'NUEVA GRANADA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(244,199,58,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'NUEVO HORIZONTE':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(245,197,58,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'OBRERO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(246,195,58,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'ONCE DE NOVIEMBRE':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(247,193,58,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'ORO NEGRO I':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(248,190,57,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'ORO NEGRO II':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(249,188,57,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'PABLO VI':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(250,186,57,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'PANORAMA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(251,184,56,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'PEÑON REDONDO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(251,182,55,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'PIGOANZA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(252,179,54,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'PORTALES DE VARANTA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(252,177,54,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'PORTALES DE YALCONIA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,174,53,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'POZO AZUL':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,172,52,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'PRADERAS DEL NORTE':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,169,51,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'PRADO ALTO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,167,50,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'PRIMERO DE MAYO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,165,49,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'PUERTAS DEL SOL':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,162,48,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'QUINTAS DE MADRIGAL':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,159,47,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'QUIRINAL':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,156,46,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'RAFAEL AZUERO MANCHOLA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,154,44,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'RAFAEL URIBE URIBE':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,151,43,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'REYNALDO MATIZ':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,148,42,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'RIVIERA NORTE':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,145,41,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'RODRIGO LARA BONILLA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,142,40,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SAN ANTONIO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,139,38,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SAN BERNARDO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(252,136,37,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SAN CARLOS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(252,133,36,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SAN FRANCISCO DE ASIS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(251,130,34,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SAN JORGE ETAPA I':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(251,127,33,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SAN JORGE ETAPA II':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(251,125,32,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SAN JOSE':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(250,122,31,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SAN LUIS DE LA PAZ':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(249,119,30,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SAN MARTIN DE PORRES':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(249,116,29,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SAN PEDRO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(248,113,27,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SAN SILVESTRE':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(247,110,26,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SAN VALENTIN DEL NORTE':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(246,107,25,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SAN VICENTE DE PAUL':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(245,104,24,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SANTA BARBARA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(244,101,22,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SANTA CLARA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(243,98,21,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SANTA INES':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(242,95,20,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SANTA ISABEL':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(241,93,19,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SANTA LIBRADA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(240,90,18,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SANTA LUCIA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(239,87,17,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SANTA ROSA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(237,85,16,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SANTA SOFIA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(236,83,15,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SANTANDER':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(235,80,14,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SECTOR ACACIAS "LOS COMUNEROS"':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(234,78,13,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SECTOR LAS ACACIAS I I "VILLA AMARILLA"':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(232,75,12,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SECTOR LAS ACACIAS I I I  "VILLA AMARILLA"':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(231,73,12,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SEVILLA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(229,71,11,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SIETE DE AGOSTO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(228,69,10,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SIGLO VEINTIUNO SUR ORIENTE':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(226,67,10,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SIMON BOLIVAR':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(225,65,9,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SINAI':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(223,63,8,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'SUR ORIENTAL':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(221,61,8,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'TENERIFE':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(220,59,7,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'TERCER MILENIO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(218,57,7,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'TIERRA DE PROMISION':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(216,55,6,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'TIMANCO I Y II ETAPA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(214,53,6,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'TIMANCO III ETAPA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(212,51,5,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'TIMANCO IV ETAPA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(210,49,5,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'TRIANGULO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(208,47,5,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'TUQUILA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(207,46,4,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VEINTE DE JULIO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(205,44,4,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VENECIA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(203,42,4,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VENTILADOR':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(201,41,3,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VERSALLES':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(198,39,3,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VICENTE ARAUJO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,37,3,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VICTOR FELIX DIAZ':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(194,36,2,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA ALEJANDRA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(191,34,2,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA ARANZAZU':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(189,32,2,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA AURORA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(186,31,2,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA CAFE (E/C)':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(184,29,2,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA CAROLINA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(182,28,2,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA CECILIA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(179,27,1,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA DEL PRADO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(177,25,1,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA DEL RIO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(174,24,1,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA ESMERALDA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(171,23,1,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA LAUREL':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(168,21,1,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA MAGDALENA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(166,20,1,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA MAGDALENA NORTE':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(163,19,1,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA MARCELA I Y II ETAPA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(160,17,1,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA MARIA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(157,16,1,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA MILENA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(154,15,1,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA NADIA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(151,14,1,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA NAZARET':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(148,13,1,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA NUBIA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(145,11,1,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA OSORIO':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(142,10,1,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA REGINA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(139,9,2,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA ROSA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(136,8,2,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA SOLEDAD':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(133,7,2,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA TERESA':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(129,6,2,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VILLA URBE':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(127,5,2,0.124)',
+                interactive: true,
+            }
+                    break;
+                case 'VIRGILIO BARCO VARGAS':
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(124,5,3,0.124)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_LimiteBarriosNeiva_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.124)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(122,4,3,0.124)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_LimiteBarriosNeiva_5');
+        map.getPane('pane_LimiteBarriosNeiva_5').style.zIndex = 405;
+        map.getPane('pane_LimiteBarriosNeiva_5').style['mix-blend-mode'] = 'normal';
+        var layer_LimiteBarriosNeiva_5 = new L.geoJson(json_LimiteBarriosNeiva_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_LimiteBarriosNeiva_5',
+            layerName: 'layer_LimiteBarriosNeiva_5',
+            pane: 'pane_LimiteBarriosNeiva_5',
+            onEachFeature: pop_LimiteBarriosNeiva_5,
+            style: style_LimiteBarriosNeiva_5_0,
+        });
+        bounds_group.addLayer(layer_LimiteBarriosNeiva_5);
+        map.addLayer(layer_LimiteBarriosNeiva_5);
+        function pop_RedVialUrbanaNeiva_6(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_RedVialUrbanaNeiva_6_0() {
+            return {
+                pane: 'pane_RedVialUrbanaNeiva_6',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_RedVialUrbanaNeiva_6');
+        map.getPane('pane_RedVialUrbanaNeiva_6').style.zIndex = 406;
+        map.getPane('pane_RedVialUrbanaNeiva_6').style['mix-blend-mode'] = 'normal';
+        var layer_RedVialUrbanaNeiva_6 = new L.geoJson(json_RedVialUrbanaNeiva_6, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_RedVialUrbanaNeiva_6',
+            layerName: 'layer_RedVialUrbanaNeiva_6',
+            pane: 'pane_RedVialUrbanaNeiva_6',
+            onEachFeature: pop_RedVialUrbanaNeiva_6,
+            style: style_RedVialUrbanaNeiva_6_0,
+        });
+        bounds_group.addLayer(layer_RedVialUrbanaNeiva_6);
+        map.addLayer(layer_RedVialUrbanaNeiva_6);
+        function pop_ViasReginCentro_7(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">NOMBRE_GEO</th>\
+                        <td>' + (feature.properties['NOMBRE_GEO'] !== null ? autolinker.link(String(feature.properties['NOMBRE_GEO']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_ViasReginCentro_7_0() {
+            return {
+                pane: 'pane_ViasReginCentro_7',
+                opacity: 1,
+                color: 'rgba(183,72,75,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_ViasReginCentro_7');
+        map.getPane('pane_ViasReginCentro_7').style.zIndex = 407;
+        map.getPane('pane_ViasReginCentro_7').style['mix-blend-mode'] = 'normal';
+        var layer_ViasReginCentro_7 = new L.geoJson(json_ViasReginCentro_7, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_ViasReginCentro_7',
+            layerName: 'layer_ViasReginCentro_7',
+            pane: 'pane_ViasReginCentro_7',
+            onEachFeature: pop_ViasReginCentro_7,
+            style: style_ViasReginCentro_7_0,
+        });
+        bounds_group.addLayer(layer_ViasReginCentro_7);
+        map.addLayer(layer_ViasReginCentro_7);
+        function pop_EducacinReginCentro_8(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">sede</th>\
+                        <td>' + (feature.properties['sede'] !== null ? autolinker.link(String(feature.properties['sede']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PRACTICAS</th>\
+                        <td>' + (feature.properties['PRACTICAS'] !== null ? autolinker.link(String(feature.properties['PRACTICAS']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_EducacinReginCentro_8_0(feature) {
+            switch(String(feature.properties['PRACTICAS'])) {
+                case 'SI':
+                    return {
+                pane: 'pane_EducacinReginCentro_8',
+                shape: 'triangle',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(160,255,27,1.0)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_EducacinReginCentro_8',
+                shape: 'triangle',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(227,26,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_EducacinReginCentro_8');
+        map.getPane('pane_EducacinReginCentro_8').style.zIndex = 408;
+        map.getPane('pane_EducacinReginCentro_8').style['mix-blend-mode'] = 'normal';
+        var layer_EducacinReginCentro_8 = new L.geoJson(json_EducacinReginCentro_8, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_EducacinReginCentro_8',
+            layerName: 'layer_EducacinReginCentro_8',
+            pane: 'pane_EducacinReginCentro_8',
+            onEachFeature: pop_EducacinReginCentro_8,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_EducacinReginCentro_8_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_EducacinReginCentro_8);
+        map.addLayer(layer_EducacinReginCentro_8);
+        setBounds();
+        var i = 0;
+        layer_FronterasMunicipalesNeiva_4.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['MUNICIPIO'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Bahnschrift Light\', sans-serif;">' + layer.feature.properties['MUNICIPIO']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_FronterasMunicipalesNeiva_4'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_LimiteBarriosNeiva_5.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['NO__COMUNA'] !== null?String('<div style="color: #323232; font-size: 7pt; font-family: \'Bahnschrift Condensed\', sans-serif;">' + layer.feature.properties['NO__COMUNA']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_LimiteBarriosNeiva_5'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        map.addControl(new L.Control.Search({
+            layer: layer_EducacinReginCentro_8,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'sede'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        var mapDiv = document.getElementById('map');
+        var row = document.createElement('div');
+        row.className="row";
+        row.id="all";
+        row.style.height = "100%";
+        var col1 = document.createElement('div');
+        col1.className="col9";
+        col1.id = "mapWindow";
+        col1.style.height = "99%";
+        col1.style.width = "80%";
+        col1.style.display = "inline-block";
+        var col2 = document.createElement('div');
+        col2.className="col3";
+        col2.id = "menu";
+        col2.style.display = "inline-block";
+        mapDiv.parentNode.insertBefore(row, mapDiv);
+        document.getElementById("all").appendChild(col1);
+        document.getElementById("all").appendChild(col2);
+        col1.appendChild(mapDiv)
+        var Filters = {"PRACTICAS": "str"};
+        function filterFunc() {
+          map.eachLayer(function(lyr){
+          if ("options" in lyr && "dataVar" in lyr["options"]){
+            features = this[lyr["options"]["dataVar"]].features.slice(0);
+            try{
+              for (key in Filters){
+                keyS = key.replace(/[^a-zA-Z0-9_]/g, "")
+                if (Filters[key] == "str" || Filters[key] == "bool"){
+                  var selection = [];
+                  var options = document.getElementById("sel_" + keyS).options
+                  for (var i=0; i < options.length; i++) {
+                    if (options[i].selected) selection.push(options[i].value);
+                  }
+                    try{
+                      if (key in features[0].properties){
+                        for (i = features.length - 1;
+                          i >= 0; --i){
+                          if (selection.indexOf(
+                          features[i].properties[key])<0
+                          && selection.length>0) {
+                          features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                  }
+                }
+                if (Filters[key] == "int"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (parseInt(features[i].properties[key])
+                          < sliderVals[0]
+                          || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "date"
+                  || Filters[key] == "datetime"
+                  || Filters[key] == "time"){
+                  try{
+                    if (key in features[0].properties){
+                      HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                      startdate = document.getElementById("dat_" +
+                        HTMLkey + "_date1").value.replace(" ", "T");
+                      enddate = document.getElementById("dat_" +
+                        HTMLkey + "_date2").value.replace(" ", "T");
+                      for (i = features.length - 1; i >= 0; --i){
+                        if (features[i].properties[key] < startdate
+                          || features[i].properties[key] > enddate){
+                          features.splice(i,1);
+                        }
+                      }
+                    }
+                  } catch(err){
+                  }
+                }
+              }
+            } catch(err){
+            }
+          this[lyr["options"]["layerName"]].clearLayers();
+          this[lyr["options"]["layerName"]].addData(features);
+        var i = 0;
+        layer_FronterasMunicipalesNeiva_4.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['MUNICIPIO'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Bahnschrift Light\', sans-serif;">' + layer.feature.properties['MUNICIPIO']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_FronterasMunicipalesNeiva_4'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_LimiteBarriosNeiva_5.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['NO__COMUNA'] !== null?String('<div style="color: #323232; font-size: 7pt; font-family: \'Bahnschrift Condensed\', sans-serif;">' + layer.feature.properties['NO__COMUNA']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_LimiteBarriosNeiva_5'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+          }
+          })
+        }
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_PRACTICAS = document.createElement('div');
+            div_PRACTICAS.id = "div_PRACTICAS";
+            div_PRACTICAS.className= "filterselect";
+            document.getElementById("menu").appendChild(div_PRACTICAS);
+            sel_PRACTICAS = document.createElement('select');
+            sel_PRACTICAS.multiple = true;
+            sel_PRACTICAS.size = 4;
+            sel_PRACTICAS.id = "sel_PRACTICAS";
+            var PRACTICAS_options_str = "<option value='' unselected></option>";
+            sel_PRACTICAS.onchange = function(){filterFunc()};
+            PRACTICAS_options_str  += '<option value="NULL">NULL</option>';
+            PRACTICAS_options_str  += '<option value="BAS/SEC">BAS/SEC</option>';
+            PRACTICAS_options_str  += '<option value="PRIMARIA">PRIMARIA</option>';
+            PRACTICAS_options_str  += '<option value="SECUNDARIA">SECUNDARIA</option>';
+            sel_PRACTICAS.innerHTML = PRACTICAS_options_str;
+            div_PRACTICAS.appendChild(sel_PRACTICAS);
+            var lab_PRACTICAS = document.createElement('div');
+            lab_PRACTICAS.innerHTML = 'PRACTICAS';
+            lab_PRACTICAS.className = 'filterlabel';
+            div_PRACTICAS.appendChild(lab_PRACTICAS);
+            var reset_PRACTICAS = document.createElement('div');
+            reset_PRACTICAS.innerHTML = 'clear filter';
+            reset_PRACTICAS.className = 'filterlabel';
+            reset_PRACTICAS.onclick = function() {
+                var options = document.getElementById("sel_PRACTICAS").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_PRACTICAS.appendChild(reset_PRACTICAS);
+        resetLabels([layer_FronterasMunicipalesNeiva_4,layer_LimiteBarriosNeiva_5]);
+        map.on("zoomend", function(){
+            resetLabels([layer_FronterasMunicipalesNeiva_4,layer_LimiteBarriosNeiva_5]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_FronterasMunicipalesNeiva_4,layer_LimiteBarriosNeiva_5]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_FronterasMunicipalesNeiva_4,layer_LimiteBarriosNeiva_5]);
+        });
+        </script>
+    </body>
+</html>
